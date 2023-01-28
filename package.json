@@ -7,11 +7,31 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "swift": "react-native swiftify"
   },
   "dependencies": {
+    "@react-navigation/bottom-tabs": "^6.5.3",
+    "@react-navigation/native": "^6.1.2",
+    "@react-navigation/native-stack": "^6.9.8",
+    "@react-navigation/stack": "^6.3.11",
+    "@rneui/base": "^4.0.0-rc.7",
+    "@rneui/themed": "^4.0.0-rc.7",
+    "@types/lodash": "^4.14.191",
+    "axios": "^1.2.4",
+    "lodash": "^4.17.21",
+    "nativewind": "^2.0.11",
     "react": "18.1.0",
-    "react-native": "0.70.6"
+    "react-native": "0.70.6",
+    "react-native-animated-splash-screen": "^2.0.5",
+    "react-native-elements": "^3.4.3",
+    "react-native-gesture-handler": "^2.9.0",
+    "react-native-paper": "^5.1.4",
+    "react-native-safe-area-context": "^4.5.0",
+    "react-native-screens": "^3.19.0",
+    "react-native-swift": "^1.2.3",
+    "react-native-track-player": "1.1.8",
+    "react-native-vector-icons": "^9.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
@@ -29,6 +49,7 @@
     "jest": "^26.6.3",
     "metro-react-native-babel-preset": "0.72.3",
     "react-test-renderer": "18.1.0",
+    "tailwindcss": "^3.2.4",
     "typescript": "^4.8.3"
   },
   "jest": {
