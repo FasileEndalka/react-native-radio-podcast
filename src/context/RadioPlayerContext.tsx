@@ -84,19 +84,18 @@ export const PlayerContextProvider = (props: PropsWithChildren<{}>) => {
   };
 
   const play = async (track: Track) => {
-    await RNTrackPlayer.add([track]);
-    setCurrentTrack(track);
-    await RNTrackPlayer.play();
+    await RNTrackPlayer.add([track]).then(async () => {
+      setCurrentTrack(track);
+      await RNTrackPlayer.play();
+    });
   };
   const playNewStation = async (track: Track) => {
-    await RNTrackPlayer.reset()
-      .then(async () => {
-        await RNTrackPlayer.add([track]);
-        setCurrentTrack(track);
-      })
-      .then(async () => {
+    await RNTrackPlayer.reset().then(async () => {
+      await RNTrackPlayer.add([track]).then(async () => {
         await RNTrackPlayer.play();
       });
+      setCurrentTrack(track);
+    });
   };
   const paused = async () => {
     await RNTrackPlayer.pause();

@@ -21,6 +21,7 @@ const ListenNowScreen = () => {
             Radio
           </Text>
           <FlatList
+            className="mb-52"
             keyExtractor={(item, index) => `key-${index}`}
             data={playerListContext.favRadioList}
             renderItem={({item}): any => {
@@ -44,7 +45,7 @@ const ListenNowScreen = () => {
                     onPress={() => {
                       playerListContext.playNewStation(item);
                     }}>
-                    <View className="bg-red-400 w-auto h-96 rounded-2xl flex-col-reverse px-4 py-3 justify-between ">
+                    <View className="bg-red-300 w-auto h-96 rounded-2xl flex-col-reverse px-4 py-3 justify-between ">
                       <View className="flex flex-row justify-between items-center">
                         <View>
                           <Text>Live . 10-11PM</Text>

@@ -26,7 +26,7 @@ const SearchStackNavigator = () => {
       />
       <SearchStack.Screen
         options={{
-          headerTitle: 'Radio Station Detail',
+          headerTitle: 'Detail',
           headerTintColor: '#f87171',
         }}
         name="RadioStationDetail"

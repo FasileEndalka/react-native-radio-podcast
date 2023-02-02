@@ -35,6 +35,7 @@ const SearchList = (props: SearchProps) => {
 
   return props.data.length ? (
     <FlatList
+      className="mb-40"
       keyboardShouldPersistTaps="never"
       data={props.data}
       renderItem={({item}) => {

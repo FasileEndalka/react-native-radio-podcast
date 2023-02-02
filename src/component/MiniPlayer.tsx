@@ -1,4 +1,10 @@
-import {View, Text, ActivityIndicator, useColorScheme} from 'react-native';
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  useColorScheme,
+  Image,
+} from 'react-native';
 import React from 'react';
 import {Icon} from 'react-native-elements';
 import {usePlayerContext} from '../context/RadioPlayerContext';
@@ -16,14 +22,13 @@ const MiniPlayer = () => {
         className={`${
           isDarkMode ? 'bg-slate-600' : 'bg-red-200'
         }  flex-row px-3 h-16 items-center justify-between `}>
-        <View className="flex-row items-center ">
-          <View className="h-auto ">
-            <Icon
-              name="beamed-note"
-              type="entypo"
-              color={`${isDarkMode ? '#f87171' : '#31406e'}`}
-              size={25}
-            />
+        <View className="flex-row items-center justify-center ">
+          <View>
+            {context.isPlaying ? (
+              <Image source={require('../assets/gif/playSignal.gif')} />
+            ) : (
+              <Image source={require('../assets/waveIcon-small.png')} />
+            )}
           </View>
 
           <View className="pl-3">
@@ -39,7 +44,7 @@ const MiniPlayer = () => {
             </Text>
           </View>
         </View>
-        <View>
+        <View className="flex-row justify-between gap-4">
           {context.isPaused && (
             <TouchableOpacity
               onPress={() => context.play(context.currentTrack!)}>
@@ -51,11 +56,12 @@ const MiniPlayer = () => {
               />
             </TouchableOpacity>
           )}
+          {context.isBuffering && <ActivityIndicator size="small" />}
           {context.isPlaying && (
             <TouchableOpacity onPress={() => context.paused()}>
               <Icon
-                name="pause"
-                type="MaterialIcons"
+                name="controller-stop"
+                type="entypo"
                 color={`${isDarkMode ? '#f87171' : '#31406e'}`}
                 size={30}
               />
@@ -65,14 +71,21 @@ const MiniPlayer = () => {
             <TouchableOpacity
               onPress={() => context.play(context.currentTrack!)}>
               <Icon
-                name="pause"
-                type="MaterialIcons"
+                name="controller-stop"
+                type="entypo"
                 color={`${isDarkMode ? '#f87171' : '#31406e'}`}
                 size={30}
               />
             </TouchableOpacity>
           )}
-          {context.isBuffering && <ActivityIndicator size="small" />}
+          <TouchableOpacity onPress={() => context.paused()}>
+            <Icon
+              name="controller-next"
+              type="entypo"
+              color={`${isDarkMode ? '#f87171' : '#31406e'}`}
+              size={30}
+            />
+          </TouchableOpacity>
         </View>
       </View>
     </TouchableOpacity>
