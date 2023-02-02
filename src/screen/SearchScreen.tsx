@@ -1,4 +1,10 @@
-import {View, Text, TextInput, ActivityIndicator} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  ActivityIndicator,
+  useColorScheme,
+} from 'react-native';
 import React, {useState, useCallback} from 'react';
 import KeyboardDismissView from '../component/KeyboardDismisView';
 import SearchList from '../component/SearchList';
@@ -8,6 +14,7 @@ import {debounce} from 'lodash';
 const SearchScreen = () => {
   const [value, setValue] = useState('');
   const [debouncedKey, setDebouncedKey] = useState('');
+  const isDarkMode = useColorScheme() === 'dark';
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(
@@ -24,15 +31,18 @@ const SearchScreen = () => {
   const {data, loading} = useFetchData(debouncedKey);
 
   return (
-    <>
+    <View>
       <KeyboardDismissView withScrollView={false}>
         <View>
           <View className="py-2">
-            <Text className="font-bold text-xl">Search</Text>
+            <Text
+              className={` ${isDarkMode && 'text-white'}  font-bold text-xl`}>
+              Search
+            </Text>
           </View>
           <View className="flex-row items-center">
             <TextInput
-              selectionColor={'red'}
+              selectionColor={'#f87171'}
               clearButtonMode="always"
               className="bg-red-100 h-10 px-4 rounded-xl flex-1"
               onChangeText={onChangeHandler}
@@ -50,7 +60,7 @@ const SearchScreen = () => {
           <SearchList data={data} />
         )}
       </View>
-    </>
+    </View>
   );
 };
 

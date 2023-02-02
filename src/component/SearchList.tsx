@@ -1,8 +1,15 @@
-import {View, Text, FlatList, Image, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  useColorScheme,
+} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {usePlayerContext} from '../context/RadioPlayerContext';
 import RNTrackPlayer, {Track} from 'react-native-track-player';
+import {Icon} from 'react-native-elements';
 const getStation = (item: any) => {
   const PlayingStation: Track = {
     id: item._source.url.split('/')[3],
@@ -24,6 +31,7 @@ type SearchProps = {
 const SearchList = (props: SearchProps) => {
   const navigation = useNavigation();
   const playTrackContext = usePlayerContext();
+  const isDarkMode = useColorScheme() === 'dark';
 
   return props.data.length ? (
     <FlatList
@@ -32,35 +40,46 @@ const SearchList = (props: SearchProps) => {
       renderItem={({item}) => {
         return (
           <TouchableOpacity
-            className="border-b-2 border-gray-400"
+            className="border-b border-red-200"
             onPress={async () => {
               playTrackContext.isEmpty = false;
               let trackIndex = await RNTrackPlayer.getCurrentTrack();
-              console.log(trackIndex, 'trackIndex');
               if (trackIndex !== undefined) {
-                console.log('There is old track list....');
                 playTrackContext.playNewStation(getStation(item));
               } else {
-                console.log('no Track...');
                 playTrackContext.play(getStation(item));
               }
-
+              playTrackContext.recentRadioList(
+                getStation(item),
+                playTrackContext.favRadioList,
+              );
               return navigation.navigate(
                 'RadioStationDetail' as never,
                 {data: item} as never,
               );
             }}>
             <View className=" py-4 flex-row items-center gap-3 ">
-              <View className="w-20 h-20">
-                <Image
-                  className="flex-1 w-24  rounded-lg"
-                  source={require('../assets/Addis_Live.png')}
+              <View className="w-20 h-20 items-center justify-center">
+                <Icon
+                  name="beamed-note"
+                  type="entypo"
+                  color={'#f87171'}
+                  size={45}
                 />
               </View>
               <View>
-                <Text className="text-lg font-bold">{item._source.title}</Text>
-                <Text className="text-base">{item._source.subtitle}</Text>
-                <Text className="text-base">{item._source.code}</Text>
+                <Text
+                  className={` ${
+                    isDarkMode && 'text-white'
+                  } text-lg font-bold`}>
+                  {item._source.title}
+                </Text>
+                <Text className={` ${isDarkMode && 'text-white'}  text-base`}>
+                  {item._source.subtitle}
+                </Text>
+                <Text className={` ${isDarkMode && 'text-white'}  text-base`}>
+                  {item._source.code}
+                </Text>
               </View>
             </View>
           </TouchableOpacity>

@@ -5,10 +5,12 @@ import MainStackNavigator from './src/navigator/MainStackNavigator';
 import TrackPlayer from 'react-native-track-player';
 import PlayBackServices from './src/services/trackPlayerServices';
 import {PlayerContextProvider} from './src/context/RadioPlayerContext';
-import {Text, View} from 'react-native';
+import {Text, useColorScheme, View} from 'react-native';
+import {darkTheme, lightTheme} from './src/theme/theme';
 
 const App = () => {
   const [isReady, setIsReady] = React.useState(false);
+  const isDarkMode = useColorScheme() === 'dark';
   const setupPlayer = async () => {
     await TrackPlayer.setupPlayer().then(() => {
       setIsReady(true);
@@ -19,8 +21,9 @@ const App = () => {
     TrackPlayer.registerPlaybackService(() => PlayBackServices);
     setupPlayer();
   }, []);
+
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={isDarkMode ? darkTheme : lightTheme}>
       {isReady ? (
         <PlayerContextProvider>
           <MainStackNavigator />

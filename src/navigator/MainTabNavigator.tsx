@@ -12,6 +12,7 @@ import RadioStationDetail from '../screen/RadioStationDetail';
 import {SearchStackParamsList} from './types';
 import MiniPlayer from '../component/MiniPlayer';
 import {usePlayerContext} from '../context/RadioPlayerContext';
+import {useColorScheme} from 'react-native';
 
 const SearchStack = createStackNavigator<SearchStackParamsList>();
 
@@ -20,11 +21,14 @@ const SearchStackNavigator = () => {
     <SearchStack.Navigator>
       <SearchStack.Screen
         name="SearchScreen"
-        options={{headerTitle: 'Search', headerTintColor: 'red'}}
+        options={{headerTitle: 'Search', headerTintColor: '#f87171'}}
         component={SearchScreen}
       />
       <SearchStack.Screen
-        options={{headerTitle: 'Radio Station Detail', headerTintColor: 'red'}}
+        options={{
+          headerTitle: 'Radio Station Detail',
+          headerTintColor: '#f87171',
+        }}
         name="RadioStationDetail"
         component={RadioStationDetail}
       />
@@ -35,6 +39,7 @@ const SearchStackNavigator = () => {
 const MainTabNavigator = () => {
   const Tab = createBottomTabNavigator();
   const playTrackContext = usePlayerContext();
+  const isDarkMode = useColorScheme() === 'dark';
   return (
     <Tab.Navigator
       tabBar={tabProps => (
@@ -45,7 +50,6 @@ const MainTabNavigator = () => {
       )}
       screenOptions={({route}) => ({
         headerTransparent: false,
-        tabBarActiveTintColor: 'red',
         tabBarIcon: ({focused}) => {
           switch (route.name) {
             case 'Listen Now':
@@ -53,7 +57,7 @@ const MainTabNavigator = () => {
                 <Icon
                   name="play-circle-outline"
                   type="MaterialIcons"
-                  color={focused ? '	#fc3c44' : '#31406e'}
+                  color={focused ? '#f87171' : isDarkMode ? 'white' : '#31406e'}
                   size={25}
                 />
               );
@@ -62,7 +66,9 @@ const MainTabNavigator = () => {
                 <Icon
                   name="radio"
                   type="Feather"
-                  color={focused ? '	#fc3c44' : '#31406e'}
+                  color={
+                    focused ? (isDarkMode ? 'white' : '#f87171') : '#31406e'
+                  }
                   size={25}
                 />
               );
@@ -71,7 +77,7 @@ const MainTabNavigator = () => {
                 <Icon
                   name="my-library-music"
                   type="MaterialIcons"
-                  color={focused ? '	#fc3c44' : '#31406e'}
+                  color={focused ? '#f87171' : isDarkMode ? 'white' : '#31406e'}
                   size={25}
                 />
               );
@@ -80,7 +86,7 @@ const MainTabNavigator = () => {
                 <Icon
                   name="search"
                   type="MaterialIcons"
-                  color={focused ? '	#fc3c44' : '#31406e'}
+                  color={focused ? '#f87171' : isDarkMode ? 'white' : '#31406e'}
                   size={25}
                 />
               );
@@ -91,19 +97,19 @@ const MainTabNavigator = () => {
         },
       })}>
       <Tab.Screen
-        options={{headerTintColor: 'red'}}
+        options={{headerTintColor: '#f87171'}}
         name="Listen Now"
         component={ListenNowScreen}
       />
       {/* <Tab.Screen name="Radio" component={ListenNowStackNavigator} /> */}
       <Tab.Screen
-        options={{headerTintColor: 'red'}}
+        options={{headerTintColor: '#f87171'}}
         name="Library"
         component={LibraryScreen}
       />
       <Tab.Screen
         name="Search"
-        options={{headerTintColor: 'red', headerShown: false}}
+        options={{headerTintColor: '#f87171', headerShown: false}}
         component={SearchStackNavigator}
       />
     </Tab.Navigator>
