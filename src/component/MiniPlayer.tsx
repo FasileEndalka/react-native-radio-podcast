@@ -22,29 +22,37 @@ const MiniPlayer = () => {
         className={`${
           isDarkMode ? 'bg-slate-600' : 'bg-red-200'
         }  flex-row px-3 h-16 items-center justify-between `}>
-        <View className="flex-row items-center justify-center ">
-          <View>
-            {context.isPlaying ? (
-              <Image source={require('../assets/gif/playSignal.gif')} />
-            ) : (
-              <Image source={require('../assets/waveIcon-small.png')} />
-            )}
-          </View>
-
-          <View className="pl-3">
-            <Text
-              className={`${
-                isDarkMode && 'text-white'
-              } font-bold text-lg flex-wrap `}>
-              {context.currentTrack?.title}
-            </Text>
-            <Text
-              className={`${isDarkMode && 'text-white'} font-normal text-sm`}>
-              {context.currentTrack?.userAgent}
-            </Text>
-          </View>
+        <View>
+          {context.isPlaying ? (
+            <Image source={require('../assets/gif/playSignal.gif')} />
+          ) : (
+            <Image source={require('../assets/waveIcon-small.png')} />
+          )}
         </View>
-        <View className="flex-row justify-between gap-4">
+        <View className="pl-3 flex-1 min-w-0">
+          <Text
+            className={`${
+              isDarkMode && 'text-white'
+            } font-bold text-sm flex-wrap `}>
+            {context.currentTrack?.title}
+          </Text>
+          <Text className={`${isDarkMode && 'text-white'} font-normal text-sm`}>
+            {context.currentTrack?.userAgent}
+          </Text>
+        </View>
+
+        <View className="flex-row gap-4">
+          <TouchableOpacity
+            onPress={async () => {
+              context.skipToPrevious();
+            }}>
+            <Icon
+              name="controller-fast-backward"
+              type="entypo"
+              color={`${isDarkMode ? '#f87171' : '#31406e'}`}
+              size={30}
+            />
+          </TouchableOpacity>
           {context.isPaused && (
             <TouchableOpacity
               onPress={() => context.play(context.currentTrack!)}>
@@ -78,9 +86,12 @@ const MiniPlayer = () => {
               />
             </TouchableOpacity>
           )}
-          <TouchableOpacity onPress={() => context.paused()}>
+          <TouchableOpacity
+            onPress={async () => {
+              context.skipToNext();
+            }}>
             <Icon
-              name="controller-next"
+              name="controller-fast-forward"
               type="entypo"
               color={`${isDarkMode ? '#f87171' : '#31406e'}`}
               size={30}

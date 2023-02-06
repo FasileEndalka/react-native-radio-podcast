@@ -10,6 +10,7 @@ import RNTrackPlayer, {
   STATE_PAUSED,
   STATE_READY,
 } from 'react-native-track-player';
+
 interface playerContextType {
   isPlaying: boolean;
   isBuffering: boolean;
@@ -19,11 +20,16 @@ interface playerContextType {
   isReady: boolean;
   currentTrack: Track | null;
   favRadioList: Track[];
+  searchedRadioList: Track[];
   play: (track: Track) => void;
   paused: () => void;
+  skipToNext: () => void;
+  skipToPrevious: () => void;
   playNewStation: (track: Track) => void;
-  recentRadioList: (track: Track, store: Track[]) => void;
+  favHandler: (track: Track, store: Track[]) => void;
   addToStorage: (value: Track[]) => Promise<void>;
+  addSearchedStations: (list: Track[]) => void;
+  getStoredStations: () => void;
 }
 
 export const PlayerContext = createContext<playerContextType>({
@@ -35,31 +41,59 @@ export const PlayerContext = createContext<playerContextType>({
   currentTrack: null,
   isReady: false,
   favRadioList: [],
+  searchedRadioList: [],
   play: () => null,
   playNewStation: () => null,
   paused: () => null,
-  recentRadioList: () => null,
+  favHandler: () => null,
   addToStorage: async () => undefined,
+  addSearchedStations: () => null,
+  skipToNext: () => null,
+  skipToPrevious: () => null,
+  getStoredStations: () => null,
 });
 
 export const PlayerContextProvider = (props: PropsWithChildren<{}>) => {
   const [playerState, setPlayerState] = useState<null | TrackPlayerState>(null);
   const [currentTrack, setCurrentTrack] = useState<null | Track>(null);
   const [favRadioList, setFavRadioList] = useState<Track[]>([]);
-
-  const recentRadioList = (track: Track, store: Track[]) => {
+  const [searchedRadioList, setSearchedRadioList] = useState<Track[]>([]);
+  const setFavValue = (track: Track) => {
+    track.rating = true;
+    return track;
+  };
+  const favHandler = (track: Track, store: Track[]) => {
     if (store.find(l => l.id === track.id) !== undefined) {
       return null;
     }
-    addToStorage([track, ...favRadioList]);
+    addToStorage([setFavValue(track), ...favRadioList]);
     return setFavRadioList(s => [track, ...s]);
   };
 
   useEffect(() => {
     if (!favRadioList.length) {
-      getSelectedList();
+      getStoredStations();
     }
   }, [favRadioList]);
+
+  const addSearchedStations = (list: Track[]) => {
+    setSearchedRadioList(list);
+  };
+
+  const skipToPrevious = async () => {
+    await RNTrackPlayer.skipToPrevious().then(async () => {
+      const currentTrackId = await RNTrackPlayer.getCurrentTrack();
+      const trackObj = await RNTrackPlayer.getTrack(currentTrackId);
+      setCurrentTrack(trackObj);
+    });
+  };
+  const skipToNext = async () => {
+    await RNTrackPlayer.skipToNext().then(async () => {
+      const currentTrackId = await RNTrackPlayer.getCurrentTrack();
+      const trackObj = await RNTrackPlayer.getTrack(currentTrackId);
+      setCurrentTrack(trackObj);
+    });
+  };
 
   const addToStorage = async (rData: Track[]) => {
     try {
@@ -70,9 +104,9 @@ export const PlayerContextProvider = (props: PropsWithChildren<{}>) => {
     }
   };
 
-  const getSelectedList = async () => {
+  const getStoredStations = async () => {
     try {
-      await AsyncStorage.removeItem('played-stations');
+      // await AsyncStorage.removeItem('played-stations');
       const JsonValue = await AsyncStorage.getItem('played-stations');
       const value = JSON.parse(JsonValue as string);
       if (value !== null) {
@@ -83,15 +117,18 @@ export const PlayerContextProvider = (props: PropsWithChildren<{}>) => {
     }
   };
 
-  const play = async (track: Track) => {
-    await RNTrackPlayer.add([track]).then(async () => {
-      setCurrentTrack(track);
+  const play = async () => {
+    await RNTrackPlayer.reset();
+    await RNTrackPlayer.add([...searchedRadioList]).then(async () => {
+      const currentTrackId = await RNTrackPlayer.getCurrentTrack();
+      const trackObj = await RNTrackPlayer.getTrack(currentTrackId);
+      setCurrentTrack(trackObj);
       await RNTrackPlayer.play();
     });
   };
   const playNewStation = async (track: Track) => {
     await RNTrackPlayer.reset().then(async () => {
-      await RNTrackPlayer.add([track]).then(async () => {
+      await RNTrackPlayer.add([track, ...searchedRadioList]).then(async () => {
         await RNTrackPlayer.play();
       });
       setCurrentTrack(track);
@@ -118,11 +155,16 @@ export const PlayerContextProvider = (props: PropsWithChildren<{}>) => {
     isReady: playerState === STATE_READY,
     currentTrack,
     favRadioList,
+    searchedRadioList,
     play,
     paused,
     playNewStation,
-    recentRadioList,
+    favHandler,
     addToStorage,
+    addSearchedStations,
+    skipToNext,
+    skipToPrevious,
+    getStoredStations,
   };
 
   return (

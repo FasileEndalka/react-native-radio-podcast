@@ -47,7 +47,7 @@ const SearchScreen = () => {
               className="bg-red-100 h-10 px-4 rounded-xl flex-1"
               onChangeText={onChangeHandler}
               value={value}
-              placeholder={'Your Library'}
+              placeholder={'Search for Country, City, Station'}
               placeholderTextColor="gray"
             />
           </View>

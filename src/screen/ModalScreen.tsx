@@ -6,18 +6,19 @@ import {
   useColorScheme,
   Animated,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {Icon} from 'react-native-elements';
 import {usePlayerContext} from '../context/RadioPlayerContext';
 import Slider from '@react-native-community/slider';
-// import Svg, {Path} from 'react-native-svg';
 
 const ModalScreen = () => {
   const navigation = useNavigation();
   const isDarkMode = useColorScheme() === 'dark';
   const context = usePlayerContext();
+
   return (
     <SafeAreaView
       // eslint-disable-next-line react-native/no-inline-styles
@@ -60,52 +61,81 @@ const ModalScreen = () => {
           </Text>
           <View className="w-32 h-1 mx-1 my-4 bg-slate-600  border-0 rounded md:my-10 dark:bg-gray-700" />
         </View>
-        <View className="pt-12">
-          {context.isPlaying && (
-            <TouchableOpacity onPress={() => context.paused()}>
-              <Icon
-                name="controller-stop"
-                type="entypo"
-                color={`${isDarkMode ? '#f87171' : '#31406e'}`}
-                size={60}
-              />
-            </TouchableOpacity>
-          )}
-          {context.isPaused && (
-            <TouchableOpacity
-              onPress={() => context.play(context.currentTrack!)}>
-              <Icon
-                name="play-arrow"
-                type="MaterialIcons"
-                color={`${isDarkMode ? '#f87171' : '#31406e'}`}
-                size={60}
-              />
-            </TouchableOpacity>
-          )}
-          <View className="items-center justify-center flex-row  gap-1 pt-10">
-            <View>
-              <Icon
-                name="volume-none"
-                type="foundation"
-                color={`${isDarkMode ? '#f87171' : '#31406e'}`}
-                size={30}
-              />
-            </View>
-            <Slider
-              style={{width: 200, height: 40}}
-              minimumValue={0}
-              maximumValue={1}
-              minimumTrackTintColor="brown"
-              maximumTrackTintColor="#31406e"
+        <View className="pt-12 flex-row items-center justify-center gap-14">
+          <View>
+            {context.isPlaying && (
+              <TouchableOpacity onPress={() => context.skipToPrevious}>
+                <Icon
+                  name="controller-fast-backward"
+                  type="entypo"
+                  color={`${isDarkMode ? '#f87171' : '#31406e'}`}
+                  size={45}
+                />
+              </TouchableOpacity>
+            )}
+          </View>
+          <View>
+            {context.isPlaying && (
+              <TouchableOpacity onPress={() => context.paused()}>
+                <Icon
+                  name="controller-stop"
+                  type="entypo"
+                  color={`${isDarkMode ? '#f87171' : '#31406e'}`}
+                  size={45}
+                />
+              </TouchableOpacity>
+            )}
+            {context.isPaused && (
+              <TouchableOpacity
+                onPress={() => context.play(context.currentTrack!)}>
+                <Icon
+                  name="play-arrow"
+                  type="MaterialIcons"
+                  color={`${isDarkMode ? '#f87171' : '#31406e'}`}
+                  size={45}
+                />
+              </TouchableOpacity>
+            )}
+            {context.isBuffering && (
+              <ActivityIndicator size="small" className="pt-2" />
+            )}
+          </View>
+          <View>
+            {context.isPlaying && (
+              <TouchableOpacity onPress={() => context.skipToNext()}>
+                <Icon
+                  name="controller-fast-forward"
+                  type="entypo"
+                  color={`${isDarkMode ? '#f87171' : '#31406e'}`}
+                  size={45}
+                />
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+        <View className="items-center justify-center flex-row  gap-1 pt-10">
+          <View>
+            <Icon
+              name="volume-none"
+              type="foundation"
+              color={`${isDarkMode ? '#f87171' : '#31406e'}`}
+              size={30}
             />
-            <View>
-              <Icon
-                name="volume"
-                type="foundation"
-                color={`${isDarkMode ? '#f87171' : '#31406e'}`}
-                size={30}
-              />
-            </View>
+          </View>
+          <Slider
+            style={{width: 300, height: 40}}
+            minimumValue={0}
+            maximumValue={1}
+            minimumTrackTintColor="brown"
+            maximumTrackTintColor="#31406e"
+          />
+          <View>
+            <Icon
+              name="volume"
+              type="foundation"
+              color={`${isDarkMode ? '#f87171' : '#31406e'}`}
+              size={30}
+            />
           </View>
         </View>
       </Animated.View>
